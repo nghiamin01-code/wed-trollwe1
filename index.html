@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuộc Đua Chó Định Mệnh</title>
+    <title>Trường Đua Chó Chuyên Nghiệp</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #1f4037 0%, #99f2c8 100%);
             color: #fff;
             display: flex;
             flex-direction: column;
@@ -18,141 +18,200 @@
             padding: 20px;
             box-sizing: border-box;
         }
-        h1 { text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 5px; text-align: center; }
-        p.rule { color: #f1c40f; font-style: italic; margin-bottom: 20px; text-align: center; font-weight: bold; }
+        h1 { 
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.6); 
+            margin-bottom: 5px; 
+            text-align: center; 
+            font-size: 32px;
+            letter-spacing: 2px;
+        }
+        p.rule { color: #f1c40f; font-style: italic; margin-bottom: 25px; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         
-        .track-container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        /* Khung trường đua tổng thể */
+        .stadium {
+            background: #27ae60;
+            padding: 20px 0;
+            border: 8px solid #2c3e50;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             position: relative;
-            backdrop-filter: blur(5px);
+            overflow: hidden;
+        }
+
+        /* Mặt đường đua giả lập cát/đất mịn chuyên dụng */
+        .track-container {
+            background: #e67e22; /* Màu đất/cát cát */
+            background-image: radial-gradient(rgba(0,0,0,0.15) 15%, transparent 20%),
+                              radial-gradient(rgba(0,0,0,0.15) 15%, transparent 20%);
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
+            padding: 10px 0;
+            position: relative;
+            border-top: 4px solid #fff;
+            border-bottom: 4px solid #fff;
         }
         
-        /* Đường đua */
+        /* Làn đua */
         .lane {
             display: flex;
             align-items: center;
-            height: 80px;
-            border-bottom: 2px dashed rgba(255,255,255,0.3);
+            height: 90px;
+            border-bottom: 3px dashed rgba(255,255,255,0.6);
             position: relative;
         }
         .lane:last-child { border-bottom: none; }
         
-        /* Tên người chơi cố định bên trái */
+        /* Tên người chơi dạng bảng điện tử */
         .player-name {
-            width: 100px;
+            width: 110px;
             font-weight: bold;
             font-size: 16px;
             color: #fff;
-            background: rgba(0,0,0,0.4);
-            padding: 5px 10px;
-            border-radius: 5px;
+            background: #2c3e50;
+            border-right: 4px solid #f1c40f;
+            padding: 8px 5px;
             text-align: center;
+            z-index: 5;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+        }
+        
+        /* Vạch xuất phát biệt lập */
+        .start-line {
+            position: absolute;
+            left: 125px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #fff;
+            z-index: 2;
+        }
+
+        /* Chú chó đua sinh động hơn kèm bóng đổ */
+        .dog {
+            font-size: 45px;
+            position: absolute;
+            left: 135px; /* Vị trí xuất phát */
+            transition: left 0.08s linear;
+            user-select: none;
+            z-index: 3;
+            filter: drop-shadow(5px 10px 4px rgba(0,0,0,0.4)); /* Tạo độ nổi 3D */
+        }
+        
+        /* Vạch đích chuẩn Thể thao (Caro đen trắng) */
+        .finish-line {
+            position: absolute;
+            right: 30px;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            background-color: #fff;
+            background-image: linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000), 
+                              linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000);
+            background-size: 10px 10px;
+            background-position: 0 0, 5px 5px;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.3);
             z-index: 2;
         }
         
-        /* Chú chó đua */
-        .dog {
-            font-size: 35px;
-            position: absolute;
-            left: 110px; /* Vị trí xuất phát */
-            transition: left 0.1s linear;
-            user-select: none;
-        }
+        /* Khu vực nút bấm điều khiển */
+        .control-zone { margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%; }
         
-        /* Vạch đích */
-        .finish-line {
-            position: absolute;
-            right: 20px;
-            top: 0;
-            bottom: 0;
-            width: 10px;
-            background: repeating-linear-gradient(
-                45deg,
-                #fff,
-                #fff 5px,
-                #000 5px,
-                #000 10px
-            );
-            border-radius: 2px;
-        }
-        
-        /* Điều khiển */
-        .control-zone { margin-top: 25px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .btn {
-            background: #e74c3c;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-size: 20px;
-            font-weight: bold;
+            border: 2px solid #fff;
+            padding: 16px 50px;
+            border-radius: 50px;
+            font-size: 22px;
+            font-weight: 900;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
-            transition: 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .btn:hover { background: #c0392b; transform: scale(1.05); }
-        .btn:disabled { background: #7f8c8d; cursor: not-allowed; box-shadow: none; transform: none; }
+        .btn:hover { background: linear-gradient(135deg, #ff6b6b 0%, #e74c3c 100%); transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 25px rgba(0,0,0,0.5); }
+        .btn:active { transform: translateY(1px); box-shadow: 0 5px 10px rgba(0,0,0,0.4); }
+        .btn:disabled { background: #7f8c8d !important; cursor: not-allowed; box-shadow: none !important; transform: none !important; border-color: #bdc3c7; }
         
-        /* Bảng kết quả */
+        /* Bảng hiển thị án phạt thiết kế hiện đại */
         #result-box {
-            margin-top: 20px;
-            padding: 20px;
-            background: white;
-            color: #333;
-            border-radius: 10px;
+            margin-top: 10px;
+            padding: 25px;
+            background: #fff;
+            color: #2c3e50;
+            border-radius: 16px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
             display: none;
-            animation: fadeIn 0.5s ease;
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid #f1c40f;
         }
-        .loser-highlight { color: #e74c3c; font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-        .punishment-highlight { color: #f39c12; font-size: 26px; font-weight: text-transform: uppercase; font-weight: 900; text-shadow: 1px 1px 1px rgba(0,0,0,0.1); }
+        .rank-title { font-size: 18px; color: #7f8c8d; text-transform: uppercase; margin-bottom: 10px; font-weight: bold; }
+        .rank-item { font-size: 18px; font-weight: bold; margin: 5px 0; }
+        .loser-highlight { color: #c0392b; font-size: 26px; font-weight: 800; margin: 15px 0 5px 0; text-transform: uppercase; }
+        .punishment-highlight { 
+            background: #f1c40f; 
+            color: #000; 
+            font-size: 28px; 
+            font-weight: 900; 
+            padding: 10px 20px; 
+            border-radius: 10px; 
+            display: inline-block;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.15);
+            text-transform: uppercase;
+        }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
 
-    <h1>🐕 CUỘC ĐUA CHÓ ĐỊNH MỆNH 🐕</h1>
-    <p class="rule">⚠️ AI VỀ CUỐI CÙNG SẼ BỊ PHẠT NGẪU NHIÊN! ⚠️</p>
+    <h1>🏟️ TRƯỜNG ĐUA CHÓ QUỐC TẾ 🏟️</h1>
+    <p class="rule">🏁 CHÚ CHÓ VỀ CUỐI CÙNG SẼ NHẬN HÌNH PHẠT NGẪU NHIÊN 🏁</p>
     
-    <div class="track-container">
-        <div class="finish-line"></div>
-        
-        <div class="lane">
-            <div class="player-name">Chuột</div>
-            <div class="dog" id="dog-chuot">🐕</div>
-        </div>
-        
-        <div class="lane">
-            <div class="player-name">Cún</div>
-            <div class="dog" id="dog-cun">🐕</div>
-        </div>
-        
-        <div class="lane">
-            <div class="player-name">Trần Nghĩa</div>
-            <div class="dog" id="dog-nghia">🐕</div>
+    <div class="stadium">
+        <div class="track-container">
+            <div class="start-line"></div>
+            <div class="finish-line"></div>
+            
+            <div class="lane">
+                <div class="player-name">Chuột</div>
+                <div class="dog" id="dog-chuot">🐕</div>
+            </div>
+            
+            <div class="lane">
+                <div class="player-name">Cún</div>
+                <div class="dog" id="dog-cun">🐕</div>
+            </div>
+            
+            <div class="lane">
+                <div class="player-name">Trần Nghĩa</div>
+                <div class="dog" id="dog-nghia">🐕</div>
+            </div>
         </div>
     </div>
 
     <div class="control-zone">
-        <button class="btn" id="startBtn" onclick="startRace()">🏁 THẢ CHÓ ĐUA! 🏁</button>
+        <button class="btn" id="startBtn" onclick="startRace()">💥 KHỞI TRANH! 💥</button>
         
         <div id="result-box">
-            <div id="rank-list" style="font-weight: bold; margin-bottom: 15px; color: #555;"></div>
-            <hr style="border: 0; border-top: 1px solid #eee;">
+            <div class="rank-title">📊 Bảng Xếp Hạng Chung Cuộc</div>
+            <div id="rank-list"></div>
+            <hr style="border: 0; border-top: 2px dashed #bdc3c7; margin: 15px 0;">
             <div class="loser-highlight" id="loserName"></div>
-            <div style="font-size: 18px; margin-bottom: 5px; font-weight: bold;">Hình phạt ngẫu nhiên nhận được:</div>
+            <div style="font-size: 16px; font-weight: bold; color: #7f8c8d;">Hình phạt ngẫu nhiên phải chịu:</div>
             <div class="punishment-highlight" id="punishment"></div>
         </div>
     </div>
@@ -166,77 +225,69 @@
             if (isRacing) return;
             isRacing = true;
             
-            // Ẩn bảng kết quả cũ và khóa nút bấm
             document.getElementById('result-box').style.display = 'none';
             document.getElementById('startBtn').disabled = true;
-            document.getElementById('startBtn').innerText = "ĐANG ĐUA... 🔥";
+            document.getElementById('startBtn').innerText = "ĐANG ĐUA GAY CẤN... 🔥";
 
-            // Reset vị trí 3 chú chó về vạch xuất phát (110px)
+            // Reset vị trí xuất phát cho 3 chú chó (135px là vạch xuất phát chuẩn)
             const dogs = [
-                { id: 'dog-chuot', name: 'Chuột', pos: 110 },
-                { id: 'dog-cun', name: 'Cún', pos: 110 },
-                { id: 'dog-nghia', name: 'Trần Nghĩa', pos: 110 }
+                { id: 'dog-chuot', name: 'Chuột', pos: 135 },
+                { id: 'dog-cun', name: 'Cún', pos: 135 },
+                { id: 'dog-nghia', name: 'Trần Nghĩa', pos: 135 }
             ];
 
             dogs.forEach(d => {
                 document.getElementById(d.id).style.left = d.pos + 'px';
             });
 
-            // Lấy độ rộng đường đua để tính vạch đích
             const trackWidth = document.querySelector('.track-container').clientWidth;
-            const finishLinePos = trackWidth - 60; // Trừ hao kích thước chú chó
+            // Vạch đích nằm thụt vào 30px từ lề phải, trừ thêm chiều rộng chú chó khoảng 50px
+            const finishLinePos = trackWidth - 85; 
 
             let finishedCount = 0;
             let rank = [];
 
-            // Chạy vòng lặp đua
             raceInterval = setInterval(() => {
                 dogs.forEach(d => {
-                    // Nếu chú chó này chưa về đích thì tiếp tục chạy ngẫu nhiên
                     if (d.pos < finishLinePos) {
-                        d.pos += Math.floor(Math.random() * 12) + 2; // Tốc độ ngẫu nhiên từ 2 đến 13px
+                        // Tốc độ chạy nhấp nhô ngẫu nhiên tạo độ chân thật
+                        d.pos += Math.floor(Math.random() * 14) + 2; 
                         
-                        // Khống chế không cho vượt quá vạch đích quá nhiều
                         if (d.pos >= finishLinePos) {
                             d.pos = finishLinePos;
                             finishedCount++;
-                            rank.push(d.name); // Lưu thứ tự về đích
+                            rank.push(d.name);
                         }
                         
                         document.getElementById(d.id).style.left = d.pos + 'px';
                     }
                 });
 
-                // Khi cả 3 chú chó đều đã qua vạch đích
                 if (finishedCount === 3) {
                     clearInterval(raceInterval);
                     showResult(rank);
                 }
-            }, 50); // Cập nhật vị trí mỗi 50ms
+            }, 40); // Tăng tần suất cập nhật mượt mà hơn (40ms)
         }
 
         function showResult(rank) {
             isRacing = false;
             document.getElementById('startBtn').disabled = false;
-            document.getElementById('startBtn').innerText = "🏁 ĐUAVÒNG MỚI! 🏁";
+            document.getElementById('startBtn').innerText = "💥 ĐUAVÒNG MỚI! 💥";
 
-            const loser = rank[2]; // Người về thứ 3 (cuối cùng)
-            
-            // Random hình phạt từ mảng
+            const loser = rank[2]; 
             const randomPunishment = punishments[Math.floor(Math.random() * punishments.length)];
 
-            // Hiển thị thứ hạng
+            // Hiển thị kết quả thứ hạng đẹp mắt
             document.getElementById('rank-list').innerHTML = `
-                🥇 Hạng 1: ${rank[0]} <br>
-                🥈 Hạng 2: ${rank[1]} <br>
-                🥉 Hạng 3: ${rank[2]}
+                <div class="rank-item" style="color: #f1c40f;">🥇 Hạng 1: ${rank[0]}</div>
+                <div class="rank-item" style="color: #95a5a6;">🥈 Hạng 2: ${rank[1]}</div>
+                <div class="rank-item" style="color: #e67e22;">🥉 Hạng 3: ${rank[2]}</div>
             `;
 
-            // Hiển thị án phạt cho người về cuối
-            document.getElementById('loserName').innerText = `😭 Người về cuối: ${loser}`;
+            document.getElementById('loserName').innerText = `🤦‍♂️ ${loser} VỀ CUỐI!`;
             document.getElementById('punishment').innerText = randomPunishment;
             
-            // Hiện bảng kết quả lên với hiệu ứng mượt mà
             document.getElementById('result-box').style.display = 'block';
         }
     </script>
