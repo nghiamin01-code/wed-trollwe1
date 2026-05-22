@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vòng Quay Bốc Thăm May Rủi</title>
+    <title>Bốc Thăm Bóng Đập</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -20,34 +20,30 @@
         }
         h1 {
             text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-            margin: 0 0 10px 0;
+            margin: 0 0 5px 0;
             color: #f1c40f;
             text-align: center;
+            font-size: 28px;
         }
-        .turn-indicator {
-            font-size: 20px;
+        p.subtitle {
+            margin: 0 0 25px 0;
+            font-size: 15px;
+            color: #ddd;
             font-weight: bold;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 10px 25px;
-            border-radius: 30px;
-            margin-bottom: 25px;
-            border: 2px solid #f1c40f;
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.3);
-            text-shadow: 1px 1px 2px #000;
         }
         .ticket-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-            max-width: 600px;
+            max-width: 650px;
             width: 100%;
             margin-bottom: 25px;
         }
-        @media (max-width: 480px) {
-            .ticket-container { grid-template-columns: repeat(2, 1fr); }
+        @media (max-width: 550px) {
+            .ticket-container { grid-template-columns: repeat(2, 1fr); gap: 12px; }
         }
         .ticket {
-            aspect-ratio: 3/4;
+            aspect-ratio: 4/3;
             perspective: 1000px;
             cursor: pointer;
         }
@@ -56,9 +52,9 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
         .ticket.flipped .ticket-inner {
             transform: rotateY(180deg);
@@ -72,39 +68,36 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
+            border-radius: 8px;
             border: 2px solid #fff;
             padding: 10px;
             box-sizing: border-box;
             user-select: none;
+            font-weight: bold;
         }
         .ticket-front {
             background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 24px;
             color: #fff;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
         .ticket-back {
-            background: #f5f6fa;
-            color: #333;
             transform: rotateY(180deg);
             text-align: center;
-            font-weight: bold;
+            font-size: 15px;
+            line-height: 1.5;
         }
         .ticket-back.safe {
             background: #2ecc71;
             color: #fff;
-            font-size: 18px;
         }
         .ticket-back.danger {
             background: #e74c3c;
             color: #fff;
-            font-size: 16px;
         }
-        .ball-count {
-            font-size: 36px;
+        .balls {
+            font-size: 24px;
             margin-top: 5px;
+            display: block;
         }
         .btn {
             background: #9b59b6;
@@ -120,13 +113,12 @@
         }
         .btn:hover { background: #8e44ad; transform: translateY(-2px); }
         
-        /* Kết quả chung cuộc */
         #history-box {
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             background: rgba(0, 0, 0, 0.3);
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 8px;
             margin-top: 20px;
             border: 1px solid rgba(255,255,255,0.1);
         }
@@ -139,9 +131,9 @@
             padding-bottom: 5px;
         }
         .history-item {
-            font-size: 15px;
+            font-size: 14px;
             margin: 5px 0;
-            padding: 4px 8px;
+            padding: 8px;
             border-radius: 4px;
             background: rgba(255,255,255,0.05);
         }
@@ -149,45 +141,31 @@
 </head>
 <body>
 
-    <h1>🎯 BỐC THĂM ĐỊNH MỆNH 🎯</h1>
-    <div class="turn-indicator" id="turnText">Đang tải người chơi...</div>
+    <h1>🎯 BỐC THĂM MAY RỦI 🎯</h1>
+    <p class="subtitle">Bấm vào một lá thăm bất kỳ để xem kết quả!</p>
 
     <div class="ticket-container" id="ticketZone"></div>
 
-    <button class="btn" onclick="resetTham()">🔄 LÀM MỚI ĐỢT THĂM MỚI 🔄</button>
+    <button class="btn" onclick="resetGame()">🔄 XÁO LẠI THĂM MỚI 🔄</button>
 
     <div id="history-box">
-        <div class="history-title">📜 BẢNG KẾT QUẢ BỐC THĂM:</div>
+        <div class="history-title">📜 KẾT QUẢ ĐÃ BỐC:</div>
         <div id="historyList"></div>
     </div>
 
     <script>
-        // Cấu trúc 6 lá thăm cố định theo yêu cầu của bạn
-        const defaultPool = [
-            { type: 'safe', text: 'Số 1<br>🍀 AN TOÀN 🍀' },
-            { type: 'safe', text: 'Số 2<br>🍀 AN TOÀN 🍀' },
-            { type: 'safe', text: 'Số 3<br>🍀 AN TOÀN 🍀' },
-            { type: 'danger', text: 'BỊ NÉM BÓNG<br><span class="ball-count">🍒 1 Quả</span>' },
-            { type: 'danger', text: 'BỊ NÉM BÓNG<br><span class="ball-count">🍒🍒 2 Quả</span>' },
-            { type: 'danger', text: 'BỊ NÉM BÓNG<br><span class="ball-count">🍒🍒🍒 3 Quả</span>' }
+        // Cấu hình nội dung hiển thị chuẩn: 1 bóng, 2 bóng, 3 bóng bằng biểu tượng ⚽
+        const defaultTickets = [
+            { type: 'safe', text: 'Số 1<br>(kh bị làm sao)' },
+            { type: 'safe', text: 'Số 2<br>(kh bị làm sao)' },
+            { type: 'safe', text: 'Số 3<br>(kh bị làm sao)' },
+            { type: 'danger', text: 'chỉ định 1ng bị lém bóng<br><span class="balls">⚽</span>' },
+            { type: 'danger', text: 'chỉ định 1ng bị lém bóng<br><span class="balls">⚽⚽</span>' },
+            { type: 'danger', text: 'chỉ định 1ng bị lém bóng<br><span class="balls">⚽⚽⚽</span>' }
         ];
 
-        let currentPool = [];
-        let players = [];
-        let currentPlayerIndex = 0;
-        let isLock = false;
-
-        function loadPlayersFromAdmin() {
-            const stored = localStorage.getItem('game_players');
-            if (stored) {
-                // Chỉ lấy những người chơi chưa bị xóa
-                players = JSON.parse(stored);
-            } else {
-                // Mặc định ban đầu nếu admin chưa tạo ai
-                players = [{ name: "Cún" }, { name: "Chuột" }, { name: "Nghĩa" }];
-                localStorage.setItem('game_players', JSON.stringify(players));
-            }
-        }
+        let mixedTickets = [];
+        let count = 0;
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -198,84 +176,42 @@
         }
 
         function initGame() {
-            loadPlayersFromAdmin();
-            isLock = false;
-            
-            if (players.length === 0) {
-                document.getElementById('turnText').innerText = "Chưa có ai chơi! Hãy thêm người ở trang Admin.";
-                document.getElementById('ticketZone').innerHTML = "";
-                return;
-            }
-
-            if (currentPlayerIndex >= players.length) {
-                currentPlayerIndex = 0;
-            }
-
-            document.getElementById('turnText').innerText = `👉 LƯỢT CỦA: ${players[currentPlayerIndex].name.toUpperCase()}`;
-            
-            // Xáo trộn 6 lá thăm
-            currentPool = shuffle([...defaultPool]);
-
+            mixedTickets = shuffle([...defaultTickets]);
             const zone = document.getElementById('ticketZone');
             zone.innerHTML = "";
 
-            currentPool.forEach((item, index) => {
-                const ticket = document.createElement('div');
-                ticket.className = 'ticket';
-                ticket.onclick = () => drawTicket(ticket, index);
-                
-                ticket.innerHTML = `
+            mixedTickets.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'ticket';
+                card.onclick = () => openTicket(card, index);
+                card.innerHTML = `
                     <div class="ticket-inner">
-                        <div class="ticket-front">🎟️</div>
-                        <div class="ticket-back ${item.type}">
-                            ${item.text}
-                        </div>
+                        <div class="ticket-front">Thăm ẩn</div>
+                        <div class="ticket-back ${item.type}">${item.text}</div>
                     </div>
                 `;
-                zone.appendChild(ticket);
+                zone.appendChild(card);
             });
         }
 
-        function drawTicket(ticketElement, index) {
-            if (isLock || ticketElement.classList.contains('flipped')) return;
-            isLock = true;
+        function openTicket(element, index) {
+            if (element.classList.contains('flipped')) return;
+            element.classList.add('flipped');
+            count++;
 
-            // Lật lá bài lên
-            ticketElement.classList.add('flipped');
-            const result = currentPool[index];
-            const pName = players[currentPlayerIndex].name;
-
-            // Ghi nhận vào bảng kết quả
-            setTimeout(() => {
-                const historyList = document.getElementById('historyList');
-                const cleanText = result.text.replace('<br>', ' -> ').replace('<span class="ball-count">', '').replace('</span>', '');
-                
-                let emoji = result.type === 'safe' ? '💚' : '🔴';
-                historyList.innerHTML += `<div class="history-item">${emoji} <b>${pName}</b> bốc trúng: ${cleanText}</div>`;
-                
-                // Chuyển lượt sang người kế tiếp
-                currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-                
-                // Đợi 2 giây để mọi người cùng nhìn rõ kết quả rồi tự động sang lượt hoặc reset
-                setTimeout(() => {
-                    initGame();
-                }, 2000);
-
-            }, 600);
+            const info = mixedTickets[index];
+            // Định dạng lại chuỗi text cho phần lịch sử bên dưới nhìn gọn hơn
+            const cleanLog = info.text.replace('<br>', ' ').replace('<span class="balls">', ' ').replace('</span>', '');
+            const historyList = document.getElementById('historyList');
+            
+            historyList.innerHTML = `<div class="history-item">Lượt ${count}: ${cleanLog}</div>` + historyList.innerHTML;
         }
 
-        function resetTham() {
+        function resetGame() {
             document.getElementById('historyList').innerHTML = "";
-            currentPlayerIndex = 0;
+            count = 0;
             initGame();
         }
-
-        // Theo dõi thay đổi từ trang admin.html theo thời gian thực
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'game_players') {
-                initGame();
-            }
-        });
 
         initGame();
     </script>
