@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vòng Quay Bốc Thăm May Mắn</title>
+    <title>Tự Chọn Thẻ Bốc Thăm Hình Phạt</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,7 +13,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #111827 0%, #312e81 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,233 +23,252 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
             padding: 30px;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 650px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 26px;
+            margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #fff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            color: #f59e0b;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        .box-container {
-            margin: 30px 0;
-            position: relative;
+        .subtitle {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 25px;
         }
 
-        /* Hiệu ứng hộp bốc thăm */
-        .lucky-box {
-            width: 120px;
-            height: 120px;
-            background: #ff4757;
-            margin: 0 auto;
-            border-radius: 15px;
-            position: relative;
+        /* Lưới chứa các ô vuông bốc thăm */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 450px) {
+            .card-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+        }
+
+        /* Thiết kế hiệu ứng lật của ô vuông */
+        .card-box {
+            aspect-ratio: 1 / 1;
+            perspective: 1000px;
             cursor: pointer;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 40px;
         }
 
-        .lucky-box:hover {
-            transform: scale(1.05);
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
         }
 
-        /* Hiệu ứng lắc khi bốc thăm */
-        .shake {
-            animation: shakeAnim 0.5s ease-in-out infinite;
+        /* Khi ô vuông được chọn (thêm class .flipped) */
+        .card-box.flipped .card-inner {
+            transform: rotateY(180deg);
         }
 
-        @keyframes shakeAnim {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            20% { transform: translate(-8px, 5px) rotate(-10deg); }
-            40% { transform: translate(6px, -3px) rotate(10deg); }
-            60% { transform: translate(-5px, 2px) rotate(-5deg); }
-            80% { transform: translate(4px, -4px) rotate(5deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-        }
-
-        .result-display {
-            min-height: 100px;
-            background: rgba(0, 0, 0, 0.3);
+        /* Mặt trước và mặt sau ô vuông */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
             border-radius: 12px;
-            padding: 20px;
-            margin-top: 25px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 20px;
             font-weight: bold;
-            line-height: 1.5;
-            border: 1px dashed rgba(255,255,255,0.3);
+            padding: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
-        .btn {
-            background: #ffa502;
+        /* Mặt trước lúc chưa bốc (Ô vuông bí ẩn) */
+        .card-front {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #fff;
+            font-size: 28px;
+            border: 2px solid #fbbf24;
+        }
+
+        .card-front:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+        }
+
+        /* Mặt sau khi đã lật (Hiện kết quả) */
+        .card-back {
+            background: #1f2937;
+            color: #fff;
+            font-size: 13px;
+            transform: rotateY(180deg);
+            border: 2px solid #4b5563;
+            line-height: 1.3;
+        }
+
+        /* Màu sắc phân biệt kết quả sau khi lật */
+        .back-safe { border-color: #10b981; background: #064e3b; }
+        .back-danger { border-color: #ef4444; background: #7f1d1d; }
+        .back-target { border-color: #3b82f6; background: #1e3a8a; }
+
+        .btn-reset {
+            background: #10b981;
             color: white;
             border: none;
-            padding: 12px 28px;
+            padding: 12px 35px;
             font-size: 16px;
             font-weight: bold;
             border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
             transition: all 0.2s;
-            margin-top: 15px;
         }
 
-        .btn:hover {
-            background: #ff7f50;
+        .btn-reset:hover {
+            background: #059669;
             transform: translateY(-2px);
         }
 
-        .btn:disabled {
-            background: #747d8c;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .stats {
-            margin-top: 20px;
-            font-size: 13px;
-            color: #ced6e0;
-            text-align: left;
-            background: rgba(0,0,0,0.15);
+        .status-bar {
+            background: rgba(0,0,0,0.3);
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-
-        .stats-title {
+        
+        .highlight {
+            color: #f59e0b;
             font-weight: bold;
-            margin-bottom: 5px;
-            color: #ffa502;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Bốc Thăm Hình Phạt 🎈</h1>
+    <h1>Hộp Bài Bốc Thăm Hình Phạt 📦</h1>
+    <div class="subtitle">Hãy chọn ngẫu nhiên một ô vuông bên dưới để xem vận may của bạn!</div>
     
-    <div class="box-container">
-        <div class="lucky-box" id="luckyBox">🎁</div>
-    </div>
+    <div class="card-grid" id="cardGrid"></div>
 
-    <button class="btn" id="drawBtn" onclick="drawCard()">BỐC THĂM KẾT QUẢ</button>
-    <button class="btn" style="background:#2ed573; margin-left: 5px;" onclick="resetBox()">LÀM MỚI</button>
+    <button class="btn-reset" onclick="initGame()">XÁO BÀI / LÀM MỚI</button>
 
-    <div class="result-display" id="resultDisplay">
-        Hãy bấm nút để rút một thẻ ngẫu nhiên!
-    </div>
-
-    <div class="stats">
-        <div class="stats-title">Số thẻ còn lại trong hộp (<span id="totalCount">14</span>):</div>
-        <div id="cardsList"></div>
+    <div class="status-bar" id="statusBar">
+        Chưa có lượt bốc nào. Hãy chọn 1 ô!
     </div>
 </div>
 
 <script>
-    // Danh sách các thẻ ban đầu
-    const originalCards = [
-        { text: "🔴 Bị ném 1 quả bóng!", count: 3 },
-        { text: "🔴🔴 Bị ném 2 quả bóng!", count: 2 },
-        { text: "🔴🔴🔴 Bị ném 3 quả bóng! (Xui dữ thần)", count: 1 },
-        { text: "🟢 Qua lượt! Bạn hoàn toàn an toàn.", count: 4 },
-        { text: "🎯 Chỉ định 1 người bị ném 1 quả bóng!", count: 2 },
-        { text: "🎯🎯 Chỉ định 1 người bị ném 2 quả bóng!", count: 1 },
-        { text: "🎯🎯🎯 Chỉ định 1 người bị ném 3 quả bóng!", count: 1 }
+    // Định nghĩa danh sách các loại thẻ hình phạt
+    const cardTemplates = [
+        { text: "🔴<br>Bị ném<br>1 quả bóng", type: "danger", count: 3 },
+        { text: "🔴🔴<br>Bị ném<br>2 quả bóng", type: "danger", count: 2 },
+        { text: "🔴🔴🔴<br>Bị ném<br>3 quả bóng", type: "danger", count: 1 },
+        { text: "🟢<br>Qua lượt!<br>An toàn", type: "safe", count: 4 },
+        { text: "🎯<br>Chỉ định 1 ng<br>ném 1 quả", type: "target", count: 2 },
+        { text: "🎯🎯<br>Chỉ định 1 ng<br>ném 2 quả", type: "target", count: 1 },
+        { text: "🎯🎯🎯<br>Chỉ định 1 ng<br>ném 3 quả", type: "target", count: 1 }
     ];
 
-    let currentCards = [];
+    let gameCards = [];
 
-    // Khởi tạo hộp thẻ ban đầu
-    function resetBox() {
-        currentCards = [];
-        originalCards.forEach(item => {
-            for(let i = 0; i < item.count; i++) {
-                currentCards.push(item.text);
+    // Khởi tạo trò chơi và trộn bài
+    function initGame() {
+        gameCards = [];
+        
+        // Gom toàn bộ thẻ dựa trên số lượng chỉ định
+        cardTemplates.forEach(template => {
+            for(let i = 0; i < template.count; i++) {
+                gameCards.push({
+                    text: template.text,
+                    type: template.type,
+                    isFlipped: false
+                });
             }
         });
-        document.getElementById('resultDisplay').innerHTML = "Hộp đã được làm mới! Hãy bắt đầu bốc.";
-        document.getElementById('drawBtn').disabled = false;
-        updateStats();
-    }
 
-    // Cập nhật bảng thống kê số thẻ còn lại hiển thị trên giao diện
-    function updateStats() {
-        document.getElementById('totalCount').innerText = currentCards.length;
-        
-        // Đếm số lượng cụ thể từng loại còn lại
-        let counts = {};
-        currentCards.forEach(card => {
-            counts[card] = (counts[card] || 0) + 1;
-        });
-
-        let html = "";
-        originalCards.forEach(item => {
-            let currentCount = counts[item.text] || 0;
-            html += `• ${item.text.split('!')[0]}: còn <b>${currentCount}</b> thẻ<br>`;
-        });
-        document.getElementById('cardsList').innerHTML = html;
-    }
-
-    // Hàm bốc thăm
-    function drawCard() {
-        if (currentCards.length === 0) {
-            document.getElementById('resultDisplay').innerHTML = "❌ Hết thẻ rồi! Vui lòng bấm 'LÀM MỚI' để chơi tiếp.";
-            document.getElementById('drawBtn').disabled = true;
-            return;
+        // Thuật toán trộn bài ngẫu nhiên (Fisher-Yates)
+        for (let i = gameCards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [gameCards[i], gameCards[j]] = [gameCards[j], gameCards[i]];
         }
 
-        const box = document.getElementById('luckyBox');
-        const resultDisplay = document.getElementById('resultDisplay');
-        const drawBtn = document.getElementById('drawBtn');
-
-        // Hiệu ứng bắt đầu lắc hộp
-        box.classList.add('shake');
-        box.innerText = "🔄";
-        resultDisplay.innerText = "Đang xáo trộn thẻ...";
-        drawBtn.disabled = true;
-
-        setTimeout(() => {
-            // Ngừng lắc hộp
-            box.classList.remove('shake');
-            box.innerText = "🎁";
-            drawBtn.disabled = false;
-
-            // Bốc ngẫu nhiên 1 thẻ
-            const randomIndex = Math.floor(Math.random() * currentCards.length);
-            const pickedCard = currentCards.splice(randomIndex, 1)[0];
-
-            // Hiển thị kết quả ra màn hình
-            resultDisplay.innerHTML = `Chúc mừng bạn trúng thẻ:< <br><span style="color: #ffa502; font-size: 22px;">${pickedCard}</span>`;
-            
-            // Cập nhật số lượng thẻ còn lại
-            updateStats();
-
-            if(currentCards.length === 0) {
-                drawBtn.disabled = true;
-                resultDisplay.innerHTML += "<br><br><b style='color:#ff4757;'>[Hộp đã hết thẻ!]</b>";
-            }
-        }, 1000); // Lắc trong vòng 1 giây rồi ra kết quả
+        renderGrid();
+        document.getElementById('statusBar').innerHTML = `Hộp đã xếp đủ <span class="highlight">${gameCards.length} ô vuông</span>. Mời người chơi bốc!`;
     }
 
-    // Chạy lần đầu khi load trang
-    resetBox();
+    // Vẽ các ô vuông ra màn hình giao diện
+    function renderGrid() {
+        const grid = document.getElementById('cardGrid');
+        grid.innerHTML = "";
+
+        gameCards.forEach((card, index) => {
+            // Tạo thẻ bọc hiệu ứng 3D
+            const cardBox = document.createElement('div');
+            cardBox.className = "card-box";
+            if(card.isFlipped) cardBox.classList.add('flipped');
+            
+            // Lắng nghe sự kiện click bốc bài
+            cardBox.onclick = () => flipCard(index, cardBox);
+
+            // Xác định class màu sắc cho mặt sau
+            let backClass = "card-back";
+            if(card.type === "safe") backClass += " back-safe";
+            if(card.type === "danger") backClass += " back-danger";
+            if(card.type === "target") backClass += " back-target";
+
+            cardBox.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">?</div>
+                    <div class="card-back ${backClass}">${card.text}</div>
+                </div>
+            `;
+            grid.appendChild(cardBox);
+        });
+    }
+
+    // Hàm xử lý lật ô vuông khi người chơi click chọn
+    function flipCard(index, element) {
+        // Nếu ô này đã lật rồi thì không cho lật lại nữa
+        if (gameCards[index].isFlipped) return;
+
+        // Đánh dấu ô đã lật
+        gameCards[index].isFlipped = true;
+        element.classList.add('flipped');
+
+        // Lấy nội dung chữ để hiển thị lên thanh trạng thái (xóa bớt thẻ <br> đi cho đẹp)
+        let cleanText = gameCards[index].text.replace(/<br>/g, " ");
+        document.getElementById('statusBar').innerHTML = `Kết quả ô vừa bốc: <span class="highlight">${cleanText}</span>`;
+        
+        // Đếm xem còn bao nhiêu ô chưa lật
+        let remaining = gameCards.filter(c => !c.isFlipped).length;
+        if(remaining === 0) {
+            document.getElementById('statusBar').innerHTML += " | <b style='color:#ef4444;'>Đã bốc hết tất cả các ô!</b>";
+        }
+    }
+
+    // Tự động chạy khi mở web
+    initGame();
 </script>
 
 </body>
