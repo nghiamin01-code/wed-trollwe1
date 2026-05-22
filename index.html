@@ -3,217 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bốc Thăm Bóng Đập</title>
+    <title>Vòng Quay Bốc Thăm May Mắn</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 15px;
-            box-sizing: border-box;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        h1 {
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-            margin: 0 0 5px 0;
-            color: #f1c40f;
-            text-align: center;
-            font-size: 28px;
-        }
-        p.subtitle {
-            margin: 0 0 25px 0;
-            font-size: 15px;
-            color: #ddd;
-            font-weight: bold;
-        }
-        .ticket-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            max-width: 650px;
-            width: 100%;
-            margin-bottom: 25px;
-        }
-        @media (max-width: 550px) {
-            .ticket-container { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        }
-        .ticket {
-            aspect-ratio: 4/3;
-            perspective: 1000px;
-            cursor: pointer;
-        }
-        .ticket-inner {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-radius: 8px;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-        }
-        .ticket.flipped .ticket-inner {
-            transform: rotateY(180deg);
-        }
-        .ticket-front, .ticket-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            border-radius: 8px;
-            border: 2px solid #fff;
-            padding: 10px;
-            box-sizing: border-box;
-            user-select: none;
-            font-weight: bold;
-        }
-        .ticket-front {
-            background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);
-            font-size: 24px;
+            align-items: center;
             color: #fff;
+            padding: 20px;
         }
-        .ticket-back {
-            transform: rotateY(180deg);
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             text-align: center;
-            font-size: 15px;
-            line-height: 1.5;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .ticket-back.safe {
-            background: #2ecc71;
-            color: #fff;
-        }
-        .ticket-back.danger {
-            background: #e74c3c;
-            color: #fff;
-        }
-        .balls {
+
+        h1 {
             font-size: 24px;
-            margin-top: 5px;
-            display: block;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
+
+        .box-container {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        /* Hiệu ứng hộp bốc thăm */
+        .lucky-box {
+            width: 120px;
+            height: 120px;
+            background: #ff4757;
+            margin: 0 auto;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+        }
+
+        .lucky-box:hover {
+            transform: scale(1.05);
+        }
+
+        /* Hiệu ứng lắc khi bốc thăm */
+        .shake {
+            animation: shakeAnim 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shakeAnim {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-8px, 5px) rotate(-10deg); }
+            40% { transform: translate(6px, -3px) rotate(10deg); }
+            60% { transform: translate(-5px, 2px) rotate(-5deg); }
+            80% { transform: translate(4px, -4px) rotate(5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        .result-display {
+            min-height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1.5;
+            border: 1px dashed rgba(255,255,255,0.3);
+        }
+
         .btn {
-            background: #9b59b6;
+            background: #ffa502;
             color: white;
             border: none;
-            padding: 12px 35px;
+            padding: 12px 28px;
             font-size: 16px;
             font-weight: bold;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            margin-top: 15px;
         }
-        .btn:hover { background: #8e44ad; transform: translateY(-2px); }
-        
-        #history-box {
-            width: 100%;
-            max-width: 650px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 8px;
+
+        .btn:hover {
+            background: #ff7f50;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #747d8c;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats {
             margin-top: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 13px;
+            color: #ced6e0;
+            text-align: left;
+            background: rgba(0,0,0,0.15);
+            padding: 12px;
+            border-radius: 8px;
         }
-        .history-title {
-            font-size: 16px;
+
+        .stats-title {
             font-weight: bold;
-            color: #f1c40f;
-            margin-bottom: 10px;
-            border-bottom: 1px dashed rgba(255,255,255,0.2);
-            padding-bottom: 5px;
-        }
-        .history-item {
-            font-size: 14px;
-            margin: 5px 0;
-            padding: 8px;
-            border-radius: 4px;
-            background: rgba(255,255,255,0.05);
+            margin-bottom: 5px;
+            color: #ffa502;
         }
     </style>
 </head>
 <body>
 
-    <h1>🎯 BỐC THĂM MAY RỦI 🎯</h1>
-    <p class="subtitle">Bấm vào một lá thăm bất kỳ để xem kết quả!</p>
-
-    <div class="ticket-container" id="ticketZone"></div>
-
-    <button class="btn" onclick="resetGame()">🔄 XÁO LẠI THĂM MỚI 🔄</button>
-
-    <div id="history-box">
-        <div class="history-title">📜 KẾT QUẢ ĐÃ BỐC:</div>
-        <div id="historyList"></div>
+<div class="container">
+    <h1>Bốc Thăm Hình Phạt 🎈</h1>
+    
+    <div class="box-container">
+        <div class="lucky-box" id="luckyBox">🎁</div>
     </div>
 
-    <script>
-        // Cấu hình nội dung hiển thị chuẩn: 1 bóng, 2 bóng, 3 bóng bằng biểu tượng ⚽
-        const defaultTickets = [
-            { type: 'safe', text: 'Số 1<br>(kh bị làm sao)' },
-            { type: 'safe', text: 'Số 2<br>(kh bị làm sao)' },
-            { type: 'safe', text: 'Số 3<br>(kh bị làm sao)' },
-            { type: 'danger', text: 'chỉ định 1ng bị lém bóng<br><span class="balls">⚽</span>' },
-            { type: 'danger', text: 'chỉ định 1ng bị lém bóng<br><span class="balls">⚽⚽</span>' },
-            { type: 'danger', text: 'chỉ định 1ng bị lém bóng<br><span class="balls">⚽⚽⚽</span>' }
-        ];
+    <button class="btn" id="drawBtn" onclick="drawCard()">BỐC THĂM KẾT QUẢ</button>
+    <button class="btn" style="background:#2ed573; margin-left: 5px;" onclick="resetBox()">LÀM MỚI</button>
 
-        let mixedTickets = [];
-        let count = 0;
+    <div class="result-display" id="resultDisplay">
+        Hãy bấm nút để rút một thẻ ngẫu nhiên!
+    </div>
 
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+    <div class="stats">
+        <div class="stats-title">Số thẻ còn lại trong hộp (<span id="totalCount">14</span>):</div>
+        <div id="cardsList"></div>
+    </div>
+</div>
+
+<script>
+    // Danh sách các thẻ ban đầu
+    const originalCards = [
+        { text: "🔴 Bị ném 1 quả bóng!", count: 3 },
+        { text: "🔴🔴 Bị ném 2 quả bóng!", count: 2 },
+        { text: "🔴🔴🔴 Bị ném 3 quả bóng! (Xui dữ thần)", count: 1 },
+        { text: "🟢 Qua lượt! Bạn hoàn toàn an toàn.", count: 4 },
+        { text: "🎯 Chỉ định 1 người bị ném 1 quả bóng!", count: 2 },
+        { text: "🎯🎯 Chỉ định 1 người bị ném 2 quả bóng!", count: 1 },
+        { text: "🎯🎯🎯 Chỉ định 1 người bị ném 3 quả bóng!", count: 1 }
+    ];
+
+    let currentCards = [];
+
+    // Khởi tạo hộp thẻ ban đầu
+    function resetBox() {
+        currentCards = [];
+        originalCards.forEach(item => {
+            for(let i = 0; i < item.count; i++) {
+                currentCards.push(item.text);
             }
-            return array;
+        });
+        document.getElementById('resultDisplay').innerHTML = "Hộp đã được làm mới! Hãy bắt đầu bốc.";
+        document.getElementById('drawBtn').disabled = false;
+        updateStats();
+    }
+
+    // Cập nhật bảng thống kê số thẻ còn lại hiển thị trên giao diện
+    function updateStats() {
+        document.getElementById('totalCount').innerText = currentCards.length;
+        
+        // Đếm số lượng cụ thể từng loại còn lại
+        let counts = {};
+        currentCards.forEach(card => {
+            counts[card] = (counts[card] || 0) + 1;
+        });
+
+        let html = "";
+        originalCards.forEach(item => {
+            let currentCount = counts[item.text] || 0;
+            html += `• ${item.text.split('!')[0]}: còn <b>${currentCount}</b> thẻ<br>`;
+        });
+        document.getElementById('cardsList').innerHTML = html;
+    }
+
+    // Hàm bốc thăm
+    function drawCard() {
+        if (currentCards.length === 0) {
+            document.getElementById('resultDisplay').innerHTML = "❌ Hết thẻ rồi! Vui lòng bấm 'LÀM MỚI' để chơi tiếp.";
+            document.getElementById('drawBtn').disabled = true;
+            return;
         }
 
-        function initGame() {
-            mixedTickets = shuffle([...defaultTickets]);
-            const zone = document.getElementById('ticketZone');
-            zone.innerHTML = "";
+        const box = document.getElementById('luckyBox');
+        const resultDisplay = document.getElementById('resultDisplay');
+        const drawBtn = document.getElementById('drawBtn');
 
-            mixedTickets.forEach((item, index) => {
-                const card = document.createElement('div');
-                card.className = 'ticket';
-                card.onclick = () => openTicket(card, index);
-                card.innerHTML = `
-                    <div class="ticket-inner">
-                        <div class="ticket-front">Thăm ẩn</div>
-                        <div class="ticket-back ${item.type}">${item.text}</div>
-                    </div>
-                `;
-                zone.appendChild(card);
-            });
-        }
+        // Hiệu ứng bắt đầu lắc hộp
+        box.classList.add('shake');
+        box.innerText = "🔄";
+        resultDisplay.innerText = "Đang xáo trộn thẻ...";
+        drawBtn.disabled = true;
 
-        function openTicket(element, index) {
-            if (element.classList.contains('flipped')) return;
-            element.classList.add('flipped');
-            count++;
+        setTimeout(() => {
+            // Ngừng lắc hộp
+            box.classList.remove('shake');
+            box.innerText = "🎁";
+            drawBtn.disabled = false;
 
-            const info = mixedTickets[index];
-            // Định dạng lại chuỗi text cho phần lịch sử bên dưới nhìn gọn hơn
-            const cleanLog = info.text.replace('<br>', ' ').replace('<span class="balls">', ' ').replace('</span>', '');
-            const historyList = document.getElementById('historyList');
+            // Bốc ngẫu nhiên 1 thẻ
+            const randomIndex = Math.floor(Math.random() * currentCards.length);
+            const pickedCard = currentCards.splice(randomIndex, 1)[0];
+
+            // Hiển thị kết quả ra màn hình
+            resultDisplay.innerHTML = `Chúc mừng bạn trúng thẻ:< <br><span style="color: #ffa502; font-size: 22px;">${pickedCard}</span>`;
             
-            historyList.innerHTML = `<div class="history-item">Lượt ${count}: ${cleanLog}</div>` + historyList.innerHTML;
-        }
+            // Cập nhật số lượng thẻ còn lại
+            updateStats();
 
-        function resetGame() {
-            document.getElementById('historyList').innerHTML = "";
-            count = 0;
-            initGame();
-        }
+            if(currentCards.length === 0) {
+                drawBtn.disabled = true;
+                resultDisplay.innerHTML += "<br><br><b style='color:#ff4757;'>[Hộp đã hết thẻ!]</b>";
+            }
+        }, 1000); // Lắc trong vòng 1 giây rồi ra kết quả
+    }
 
-        initGame();
-    </script>
+    // Chạy lần đầu khi load trang
+    resetBox();
+</script>
+
 </body>
 </html>
